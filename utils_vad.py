@@ -64,9 +64,9 @@ class OnnxWrapper():
             self.reset_states(batch_size)
 
         if sr in [8000, 16000]:
-            ort_inputs = {'input': x.numpy(), 'h': self._h, 'c': self._c, 'sr': np.array(sr, dtype='int64')}
+            ort_inputs = {'input': x.numpy()}
             ort_outs = self.session.run(None, ort_inputs)
-            out, self._h, self._c = ort_outs
+            out = ort_outs
         else:
             raise ValueError()
 
@@ -503,7 +503,9 @@ class VADIterator:
         window_size_samples = len(x[0]) if x.dim() == 2 else len(x)
         self.current_sample += window_size_samples
 
-        speech_prob = self.model(x, self.sampling_rate).item()
+        speech_prob = self.model(x, self.sampling_rate)[0, 0, 1]
+        
+        print(f'{speech_prob}')
 
         if (speech_prob >= self.threshold) and self.temp_end:
             self.temp_end = 0
