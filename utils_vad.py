@@ -72,8 +72,8 @@ class OnnxWrapper():
 
         self._last_sr = sr
         self._last_batch_size = batch_size
-
-        out = torch.tensor(out)
+              
+        out = torch.tensor(np.array(out))
         return out
 
     def audio_forward(self, x, sr: int, num_samples: int = 512):
